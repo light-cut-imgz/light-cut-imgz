@@ -119,13 +119,13 @@ jobs:
           releaseBody: |
             ## What's new
 
-            See [CHANGELOG](https://github.com/sindus/light-cut-imgZ/blob/main/CHANGELOG.md) for details.
+            See [CHANGELOG](https://github.com/light-cut-imgz/light-cut-imgz/blob/main/CHANGELOG.md) for details.
 
             ## Install
 
             **Linux (AppImage)**
             ```sh
-            curl -fsSL https://github.com/sindus/light-cut-imgZ/releases/download/${{ github.ref_name }}/light-cut-imgZ_${{ github.ref_name }}_amd64.AppImage \
+            curl -fsSL https://github.com/light-cut-imgz/light-cut-imgz/releases/download/${{ github.ref_name }}/light-cut-imgZ_${{ github.ref_name }}_amd64.AppImage \
               -o ~/Applications/light-cut-imgZ.AppImage && \
             chmod +x ~/Applications/light-cut-imgZ.AppImage
             ```

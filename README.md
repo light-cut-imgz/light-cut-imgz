@@ -16,11 +16,17 @@ A fast, native desktop image editor built with [Tauri](https://tauri.app) and Re
 
 ## Install
 
+### macOS (Homebrew)
+
+```sh
+brew install --cask light-cut-imgz/tap/light-cut-imgz
+```
+
 ### Linux (AppImage)
 
 ```sh
 mkdir -p ~/Applications && \
-curl -fsSL https://github.com/sindus/light-cut-imgZ/releases/latest/download/light-cut-imgZ_amd64.AppImage \
+curl -fsSL https://github.com/light-cut-imgz/light-cut-imgz/releases/latest/download/light-cut-imgZ_amd64.AppImage \
   -o ~/Applications/light-cut-imgZ.AppImage && \
 chmod +x ~/Applications/light-cut-imgZ.AppImage && \
 ~/Applications/light-cut-imgZ.AppImage
@@ -29,14 +35,14 @@ chmod +x ~/Applications/light-cut-imgZ.AppImage && \
 ### macOS (Apple Silicon)
 
 ```sh
-curl -fsSL https://github.com/sindus/light-cut-imgZ/releases/latest/download/light-cut-imgZ_aarch64.dmg \
+curl -fsSL https://github.com/light-cut-imgz/light-cut-imgz/releases/latest/download/light-cut-imgZ_aarch64.dmg \
   -o /tmp/light-cut-imgZ.dmg && open /tmp/light-cut-imgZ.dmg
 ```
 
 ### macOS (Intel)
 
 ```sh
-curl -fsSL https://github.com/sindus/light-cut-imgZ/releases/latest/download/light-cut-imgZ_x64.dmg \
+curl -fsSL https://github.com/light-cut-imgz/light-cut-imgz/releases/latest/download/light-cut-imgZ_x64.dmg \
   -o /tmp/light-cut-imgZ.dmg && open /tmp/light-cut-imgZ.dmg
 ```
 
@@ -46,7 +52,10 @@ curl -fsSL https://github.com/sindus/light-cut-imgZ/releases/latest/download/lig
 # Linux
 rm ~/Applications/light-cut-imgZ.AppImage
 
-# macOS
+# macOS (Homebrew)
+brew uninstall --cask light-cut-imgz
+
+# macOS (manual install)
 rm -rf /Applications/light-cut-imgZ.app
 ```
 
@@ -115,11 +124,16 @@ cargo fmt --check
 - **CI** runs on every push/PR to `main`: lint, type-check, Vitest, Clippy, `cargo test`, Playwright E2E — on both Ubuntu and macOS.
 - **Release** is triggered by pushing a tag `v*.*.*`: builds AppImage + .deb (Linux) and .dmg (macOS arm64 + x86_64) via `tauri-action`, creates a draft GitHub Release.
 - **Docs** are deployed to GitHub Pages from `docs/` on every push to `main`.
+- **Homebrew tap** is updated when a release is _published_: the `update-homebrew-tap` workflow
+  recomputes the `.dmg` checksums and bumps the cask in
+  [light-cut-imgz/homebrew-tap](https://github.com/light-cut-imgz/homebrew-tap).
+  It needs a `HOMEBREW_TAP_TOKEN` secret (a PAT with `contents: write` on the tap repository).
 
 ```sh
 # To cut a release:
 git tag v0.1.0
 git push origin v0.1.0
+# then publish the draft release on GitHub — this bumps the Homebrew cask
 ```
 
 ---

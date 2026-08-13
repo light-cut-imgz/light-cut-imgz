@@ -85,7 +85,7 @@ pub struct LangMenuState {
     pub fr: tauri::menu::CheckMenuItem<tauri::Wry>,
 }
 
-const RELEASES_URL: &str = "https://github.com/sindus/light-cut-imgZ/releases";
+const RELEASES_URL: &str = "https://github.com/light-cut-imgz/light-cut-imgz/releases";
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {

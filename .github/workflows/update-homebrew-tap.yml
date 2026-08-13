@@ -1,0 +1,66 @@
+name: Update Homebrew tap
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish to the tap (e.g. v0.6.0)'
+        required: true
+
+jobs:
+  update-cask:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve version
+        id: version
+        run: |
+          TAG="${{ github.event.release.tag_name || inputs.tag }}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Compute .dmg checksums
+        id: checksums
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          base="https://github.com/${{ github.repository }}/releases/download/$TAG"
+          curl -fsSL -o arm.dmg "$base/light-cut-imgZ_${VERSION}_aarch64.dmg"
+          curl -fsSL -o intel.dmg "$base/light-cut-imgZ_${VERSION}_x64.dmg"
+          echo "arm=$(sha256sum arm.dmg | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          echo "intel=$(sha256sum intel.dmg | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout tap
+        uses: actions/checkout@v4
+        with:
+          repository: light-cut-imgz/homebrew-tap
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: tap
+
+      - name: Bump cask
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          ARM_SHA: ${{ steps.checksums.outputs.arm }}
+          INTEL_SHA: ${{ steps.checksums.outputs.intel }}
+        run: |
+          cask=tap/Casks/light-cut-imgz.rb
+          sed -i -E "s|^  version \".*\"$|  version \"$VERSION\"|" "$cask"
+          sed -i -E "s|arm:   \"[a-f0-9]{64}\"|arm:   \"$ARM_SHA\"|" "$cask"
+          sed -i -E "s|intel: \"[a-f0-9]{64}\"|intel: \"$INTEL_SHA\"|" "$cask"
+          grep -q "\"$VERSION\"" "$cask"
+          grep -q "$ARM_SHA" "$cask"
+          grep -q "$INTEL_SHA" "$cask"
+
+      - name: Commit and push
+        working-directory: tap
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Casks/light-cut-imgz.rb
+          git diff --cached --quiet && echo "Cask already up to date" && exit 0
+          git commit -m "light-cut-imgz $VERSION"
+          git push

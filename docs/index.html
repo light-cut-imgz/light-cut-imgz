@@ -253,7 +253,10 @@
       <div class="logo">light-cut-img<span class="logo-z">Z</span></div>
       <p class="tagline">Crop, rotate, and export images. Native speed. No cloud. No fluff.</p>
       <div class="hero-buttons">
-        <a href="https://github.com/sindus/light-cut-imgZ/releases/latest" class="btn btn-primary">
+        <a
+          href="https://github.com/light-cut-imgz/light-cut-imgz/releases/latest"
+          class="btn btn-primary"
+        >
           <svg
             width="16"
             height="16"
@@ -268,7 +271,7 @@
           </svg>
           Download
         </a>
-        <a href="https://github.com/sindus/light-cut-imgZ" class="btn btn-outline">
+        <a href="https://github.com/light-cut-imgz/light-cut-imgz" class="btn btn-outline">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
@@ -350,11 +353,17 @@
       <section id="install">
         <h2>Install</h2>
 
+        <h3>macOS — Homebrew</h3>
+        <div class="code-block">
+          <pre>brew install --cask light-cut-imgz/tap/light-cut-imgz</pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
         <h3>Linux — one-line install (AppImage)</h3>
         <div class="code-block">
           <pre>
 mkdir -p ~/Applications && \
-curl -fsSL https://github.com/sindus/light-cut-imgZ/releases/latest/download/light-cut-imgZ_amd64.AppImage \
+curl -fsSL https://github.com/light-cut-imgz/light-cut-imgz/releases/latest/download/light-cut-imgZ_amd64.AppImage \
   -o ~/Applications/light-cut-imgZ.AppImage && \
 chmod +x ~/Applications/light-cut-imgZ.AppImage && \
 ~/Applications/light-cut-imgZ.AppImage</pre
@@ -365,7 +374,7 @@ chmod +x ~/Applications/light-cut-imgZ.AppImage && \
         <h3>macOS (Apple Silicon) — one-line install</h3>
         <div class="code-block">
           <pre>
-curl -fsSL https://github.com/sindus/light-cut-imgZ/releases/latest/download/light-cut-imgZ_aarch64.dmg \
+curl -fsSL https://github.com/light-cut-imgz/light-cut-imgz/releases/latest/download/light-cut-imgZ_aarch64.dmg \
   -o /tmp/light-cut-imgZ.dmg && open /tmp/light-cut-imgZ.dmg</pre
           >
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -374,7 +383,7 @@ curl -fsSL https://github.com/sindus/light-cut-imgZ/releases/latest/download/lig
         <h3>macOS (Intel) — one-line install</h3>
         <div class="code-block">
           <pre>
-curl -fsSL https://github.com/sindus/light-cut-imgZ/releases/latest/download/light-cut-imgZ_x64.dmg \
+curl -fsSL https://github.com/light-cut-imgz/light-cut-imgz/releases/latest/download/light-cut-imgZ_x64.dmg \
   -o /tmp/light-cut-imgZ.dmg && open /tmp/light-cut-imgZ.dmg</pre
           >
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -391,7 +400,13 @@ curl -fsSL https://github.com/sindus/light-cut-imgZ/releases/latest/download/lig
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
 
-        <h3>macOS</h3>
+        <h3>macOS — Homebrew</h3>
+        <div class="code-block">
+          <pre>brew uninstall --cask light-cut-imgz</pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <h3>macOS — manual install</h3>
         <div class="code-block">
           <pre>rm -rf /Applications/light-cut-imgZ.app</pre>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -403,7 +418,7 @@ curl -fsSL https://github.com/sindus/light-cut-imgZ/releases/latest/download/lig
     <footer>
       <p>
         MIT License &nbsp;·&nbsp;
-        <a href="https://github.com/sindus/light-cut-imgZ">GitHub</a>
+        <a href="https://github.com/light-cut-imgz/light-cut-imgz">GitHub</a>
         &nbsp;·&nbsp; Built with <a href="https://tauri.app">Tauri</a>
       </p>
     </footer>
