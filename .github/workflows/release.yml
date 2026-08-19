@@ -1,0 +1,177 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  # tauri-action names the bundles after the version in tauri.conf.json, while the
+  # tap workflow derives the version from the git tag. When they disagree the release
+  # publishes assets under a name the cask url cannot resolve, and the failure only
+  # surfaces after the GitHub release is already public.
+  check-version:
+    name: Check the tag matches the manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compare the tag with tauri.conf.json and Cargo.toml
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          WANT="${TAG#v}"
+          CONF=$(python3 -c "import json;print(json.load(open('src-tauri/tauri.conf.json'))['version'])")
+          CARGO=$(grep -m1 '^version = ' src-tauri/Cargo.toml | cut -d'"' -f2)
+          echo "tag=$WANT tauri.conf.json=$CONF Cargo.toml=$CARGO"
+          [ "$WANT" = "$CONF" ] || { echo "::error::tag $WANT does not match tauri.conf.json $CONF"; exit 1; }
+          [ "$WANT" = "$CARGO" ] || { echo "::error::tag $WANT does not match Cargo.toml $CARGO"; exit 1; }
+
+  test:
+    needs: [check-version]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Linux system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libxdo-dev
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint frontend (ESLint)
+        run: npm run lint
+
+      - name: Type-check frontend
+        run: npx tsc --noEmit
+
+      - name: Test frontend (Vitest)
+        run: npm run test:run
+
+      - name: Lint Rust (Clippy)
+        working-directory: src-tauri
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Test Rust
+        working-directory: src-tauri
+        run: cargo test
+
+  release:
+    needs: test
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Linux system dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libxdo-dev
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and publish release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'light-cut-imgz ${{ github.ref_name }}'
+          releaseBody: |
+            ## What's new
+
+            See [CHANGELOG](https://github.com/light-cut-imgz/light-cut-imgz/blob/main/CHANGELOG.md) for details.
+
+            ## Install
+
+            **Linux (AppImage)**
+            ```sh
+            curl -fsSL https://github.com/light-cut-imgz/light-cut-imgz/releases/download/${{ github.ref_name }}/light-cut-imgz_${{ github.ref_name }}_amd64.AppImage \
+              -o ~/Applications/light-cut-imgz.AppImage && \
+            chmod +x ~/Applications/light-cut-imgz.AppImage
+            ```
+
+            **macOS**
+            ```sh
+            brew install --cask light-cut-imgz/tap/light-cut-imgz
+            ```
+          releaseDraft: true
+          prerelease: false
+          args: --target ${{ matrix.target }}
+
+  # La release reste en brouillon le temps de la construction : elle ne devient
+  # publique qu'une fois toutes les plateformes réussies, pour qu'une seule d'entre
+  # elles qui casse ne laisse jamais une release incomplète aux utilisateurs.
+  publish-release:
+    name: Publish GitHub Release
+    needs: [release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Mark release as latest
+        run: gh release edit "${{ github.ref_name }}" --draft=false --latest --repo "${{ github.repository }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

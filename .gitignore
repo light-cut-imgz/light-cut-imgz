@@ -1,0 +1,22 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+
+# Tauri
+src-tauri/target
+
+# Playwright
+e2e/playwright-report
+e2e/test-results
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code
+.claude/
+
+# test coverage output
+coverage

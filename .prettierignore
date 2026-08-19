@@ -1,0 +1,8 @@
+src-tauri/gen/
+src-tauri/target/
+
+# Sorties d'outils : ignorées par git, mais Prettier ne lit pas .gitignore.
+test-results/
+playwright-report/
+dist/
+coverage/
