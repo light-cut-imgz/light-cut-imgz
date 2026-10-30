@@ -1,0 +1,60 @@
+[package]
+name = "light-cut-imgz"
+version = "1.0.0"
+description = "Fast desktop image editor — crop, rotate, export"
+authors = ["Sikander RAVATE <r.sik@hotmail.fr>"]
+license = "MIT"
+repository = "https://github.com/light-cut-imgz/light-cut-imgz"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+name = "light_cut_imgz_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+image = { version = "0.25", default-features = false, features = [
+  "png",
+  "jpeg",
+  "webp",
+  "bmp",
+  "tiff",
+  "rayon",
+] }
+imageproc = { version = "0.25", default-features = false, features = ["rayon"] }
+base64 = "0.22"
+rayon = "1"
+uuid = { version = "1", features = ["v4"] }
+kamadak-exif = "0.5"
+img-parts = "0.3"
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
+
+# Les dépendances d'imagerie sont trop lentes sans optimisation : rotation, filtres et aperçus
+# se comptent en secondes en mode dev.
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+
+[target.'cfg(target_os = "linux")'.dependencies]
+gtk = "0.18"
+
+[dev-dependencies]
+tauri = { version = "2", features = ["test"] }
+
+# tauri-plugin-updater 2.14.0 with its Windows-only `zip` dependency bumped 4 -> 9
+# (RUSTSEC-2026-0367/0368/0369). Drop once upstream releases a stable version using zip >= 9.
+[patch.crates-io]
+tauri-plugin-updater = { path = "vendor/tauri-plugin-updater" }
