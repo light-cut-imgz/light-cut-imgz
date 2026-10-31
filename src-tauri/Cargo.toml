@@ -29,11 +29,11 @@ image = { version = "0.25", default-features = false, features = [
   "rayon",
 ] }
 imageproc = { version = "0.25", default-features = false, features = ["rayon"] }
-base64 = "0.22"
+base64 = "0.23"
 rayon = "1"
 uuid = { version = "1", features = ["v4"] }
-kamadak-exif = "0.5"
-img-parts = "0.3"
+kamadak-exif = "0.6"
+img-parts = "0.4"
 tauri-plugin-updater = "2"
 tauri-plugin-process = "2"
 
