@@ -249,6 +249,66 @@ body {
   cursor: not-allowed;
 }
 
+/* Update bar: the same look, size and order in every app of the suite; only the accent differs. */
+.update-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-sizing: border-box;
+  min-height: 37px;
+  padding: 6px 24px;
+  background: color-mix(in srgb, #4338ca 15%, var(--s950));
+  border-bottom: 1px solid color-mix(in srgb, #4338ca 20%, transparent);
+  font-size: 12px;
+  color: var(--i400);
+  text-align: center;
+}
+.update-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid var(--s700);
+  color: var(--s400);
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    background 0.15s;
+}
+.update-btn:hover {
+  color: var(--s100);
+  border-color: var(--s400);
+}
+.update-btn--primary {
+  background: #4338ca;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+}
+.update-btn--primary:hover {
+  background: #4f46e5;
+  color: #fff;
+}
+.update-notes {
+  flex-basis: 100%;
+  max-height: 160px;
+  overflow: auto;
+  padding: 4px 8px;
+  text-align: left;
+  color: var(--s100);
+  user-select: text;
+}
+
 .toolbar-btn--active {
   background: var(--i900);
   border-color: #4338ca;

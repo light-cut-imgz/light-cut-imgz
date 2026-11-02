@@ -27,30 +27,25 @@ export function UpdateBanner({ update, lang, onInstall, onLater }: Props) {
   const sections = releaseNotesSections(update.notes, lang)
 
   return (
-    <div
-      role="status"
-      className="px-4 py-2 bg-indigo-900/60 border-b border-indigo-500 text-slate-100 text-sm"
-    >
-      <div className="flex items-center gap-3">
-        <span className="flex-1">{t('update.available', { v: update.version })}</span>
-        {sections.length > 0 && (
-          <button
-            className="toolbar-btn"
-            aria-expanded={showNotes}
-            onClick={() => setShowNotes((v) => !v)}
-          >
-            {showNotes ? t('update.hide-notes') : t('update.notes')}
-          </button>
-        )}
-        <button className="toolbar-btn toolbar-btn--primary" onClick={onInstall}>
-          {t('update.install')}
+    <div role="status" className="update-banner">
+      <span>{t('update.available', { v: update.version })}</span>
+      {sections.length > 0 && (
+        <button
+          className="update-btn"
+          aria-expanded={showNotes}
+          onClick={() => setShowNotes((v) => !v)}
+        >
+          {showNotes ? t('update.hide-notes') : t('update.notes')}
         </button>
-        <button className="toolbar-btn" onClick={onLater}>
-          {t('update.later')}
-        </button>
-      </div>
+      )}
+      <button className="update-btn update-btn--primary" onClick={onInstall}>
+        {t('update.install')}
+      </button>
+      <button className="update-btn" onClick={onLater}>
+        {t('update.later')}
+      </button>
       {showNotes && sections.length > 0 && (
-        <div className="cl-entry mt-2 max-h-56 overflow-y-auto pt-2 border-t border-slate-600 text-sm">
+        <div className="update-notes cl-entry">
           <ChangelogSections sections={sections} />
         </div>
       )}

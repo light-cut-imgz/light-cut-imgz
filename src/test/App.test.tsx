@@ -574,7 +574,7 @@ describe('App — mise à jour depuis le menu', () => {
   it('installe puis relance quand on le demande', async () => {
     const downloadAndInstall = await foundUpdate()
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Download & install' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Update and restart' }))
 
     await waitFor(() => expect(mockRelaunch).toHaveBeenCalled())
     expect(downloadAndInstall).toHaveBeenCalled()
@@ -628,7 +628,7 @@ describe('App — mise à jour depuis le menu', () => {
   it("signale l'échec de l'installation", async () => {
     await foundUpdate(vi.fn().mockRejectedValue(new Error('disk full')))
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Download & install' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Update and restart' }))
 
     expect(await screen.findByText(/Update check failed: Error: disk full/)).toBeInTheDocument()
     expect(mockRelaunch).not.toHaveBeenCalled()
