@@ -217,10 +217,9 @@ body {
   border-radius: 3px;
 }
 
-input:focus-visible,
-select:focus-visible {
-  outline: 2px solid var(--i400);
-  outline-offset: 2px;
+/* No focus ring anywhere. */
+:focus-visible {
+  outline: none;
 }
 
 .toolbar-btn {
