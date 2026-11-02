@@ -1,6 +1,6 @@
 [package]
 name = "light-cut-imgz"
-version = "1.0.1"
+version = "1.0.2"
 description = "Fast desktop image editor — crop, rotate, export"
 authors = ["Sikander RAVATE <r.sik@hotmail.fr>"]
 license = "MIT"
