@@ -217,7 +217,6 @@ body {
   border-radius: 3px;
 }
 
-button:focus-visible,
 input:focus-visible,
 select:focus-visible {
   outline: 2px solid var(--i400);
